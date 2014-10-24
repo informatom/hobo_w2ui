@@ -12,6 +12,9 @@
     $('#w2ui-index-table').w2grid({
       name: 'w2oui-index-table',
       multiSelect : false,
+      <if test="&async">
+        multiSearch: false,
+      </if>
       method: 'GET',
       show: {
         header: true,
