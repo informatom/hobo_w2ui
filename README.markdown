@@ -23,7 +23,9 @@ Add to your application.dryml (or whereever you want it available)
     <include gem='hobo_w2ui'/>
 
 To test if the installation was successful, you can use the DRYML-Tag
+
     <w2ui-test/>
+
 which outputs a static table to check, if the aasets and the taglibs
 are loaded correctly.
 
