@@ -1,4 +1,4 @@
-<def tag="w2ui-index-table" attrs="model, columns, sizes, searches, subsite">
+<def tag="w2ui-index-table" attrs="model, columns, sizes, searches, subsite, async, sort, sortdir">
   <set wtuicolumns="&columns.split(%r{,\s*})" />
   <set wtuicolumnsizes="&sizes.split(%r{,\s*})" />
   <set wtuisearches="&searches.split(%r{,\s*})" />
@@ -19,7 +19,9 @@
         footer: true
       },
       header: "<%= eval(model).model_name.human(count: 100) %>",
-
+      <if test="&async">
+        url: "<%= prefix + eval(model).model_name.plural %>" + ".json",
+      </if>
       toolbar: {
         items: [
           {
@@ -43,15 +45,23 @@
         ],
         onClick: function (target, data) {
           var selection = w2ui['w2oui-index-table'].getSelection()
-          if (selection[0]) {
-            switch(target) {
-              case "show":
+          switch(target) {
+            case "show":
+              if (selection[0]) {
                 document.location = "<%= prefix + eval(model).model_name.plural + '/' %>" + selection[0]
-                break
-              case "edit":
+              } else {
+                w2alert('<%= I18n.t("mercator.content_manager.no_content_element_selected") %>')
+              }
+              break
+            case "edit":
+              if (selection[0]) {
                 document.location = "<%= prefix + eval(model).model_name.plural + '/' %>" + selection[0] + "/edit"
-                break
-              case "delete":
+              } else {
+                w2alert('<%= I18n.t("mercator.content_manager.no_content_element_selected") %>')
+              }
+              break
+            case "delete":
+              if (selection[0]) {
                 w2confirm('<%= I18n.t("hobo.messages.confirm") %>', function (button) {
                   if (button =='Yes') {
                     $.ajax({
@@ -62,10 +72,11 @@
                     })
                   }
                 })
+              } else {
+                w2alert('<%= I18n.t("mercator.content_manager.no_content_element_selected") %>')
+              }
+              break
             }
-          } else {
-            w2alert('<%= I18n.t("mercator.content_manager.no_content_element_selected") %>')
-          }
         }
       },
 
@@ -99,10 +110,12 @@
       ],
 
       sortData: [{
-        field: 'this',
-        direction: 'ASC'
+        field: '#{sort}',
+        direction: '#{sortdir || "ASC"}'
       }]
     })
-    w2ui["w2oui-index-table"].load("<%= prefix + eval(model).model_name.plural + ".json"%>")
+    <unless test="&async">
+      w2ui["w2oui-index-table"].load("<%= prefix + eval(model).model_name.plural %>" + ".json")
+    </unless>
   </script>
 </def>
