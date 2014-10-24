@@ -1,0 +1,108 @@
+<def tag="w2ui-index-table" attrs="model, columns, sizes, searches, subsite">
+  <set wtuicolumns="&columns.split(%r{,\s*})" />
+  <set wtuicolumnsizes="&sizes.split(%r{,\s*})" />
+  <set wtuisearches="&searches.split(%r{,\s*})" />
+  <set prefix="& subsite ? '/' + subsite + '/' : '/'" />
+
+  <div id="w2ui-index-table"
+       style="height: 800px;">
+  </div>
+
+  <script>
+    $('#w2ui-index-table').w2grid({
+      name: 'w2oui-index-table',
+      multiSelect : false,
+      method: 'GET',
+      show: {
+        header: true,
+        toolbar: true,
+        footer: true
+      },
+      header: "<%= eval(model).model_name.human(count: 100) %>",
+
+      toolbar: {
+        items: [
+          {
+            type: 'button',
+            id: 'show',
+            caption: "<%= I18n.t('hobo.actions.show', model: eval(model).model_name.human) %>",
+            img: 'fa fa-lg fa-eye'
+          },
+          {
+            type: 'button',
+            id: 'edit',
+            caption: " <%= I18n.t('hobo.actions.edit', model: eval(model).model_name.human) %>",
+            img: 'fa fa-lg fa-edit'
+          },
+          {
+            type: 'button',
+            id: 'delete',
+            caption: " <%= I18n.t('hobo.actions.delete', model: eval(model).model_name.human) %>",
+            img: 'fa fa-lg fa-trash'
+          }
+        ],
+        onClick: function (target, data) {
+          var selection = w2ui['w2oui-index-table'].getSelection()
+          if (selection[0]) {
+            switch(target) {
+              case "show":
+                document.location = "<%= prefix + eval(model).model_name.plural + '/' %>" + selection[0]
+                break
+              case "edit":
+                document.location = "<%= prefix + eval(model).model_name.plural + '/' %>" + selection[0] + "/edit"
+                break
+              case "delete":
+                w2confirm('<%= I18n.t("hobo.messages.confirm") %>', function (button) {
+                  if (button =='Yes') {
+                    $.ajax({
+                      url: "<%= prefix + eval(model).model_name.plural + '/' %>" + selection[0] + ".json",
+                      type: "DELETE"
+                    }).done( function() {
+                      w2ui["w2oui-index-table"].load("<%= prefix + eval(model).model_name.plural %>" + ".json")
+                    })
+                  }
+                })
+            }
+          } else {
+            w2alert('<%= I18n.t("mercator.content_manager.no_content_element_selected") %>')
+          }
+        }
+      },
+
+      columns: [
+        {
+          field: 'recid',
+          caption: 'ID',
+          size: '20',
+          sortable: true,
+          hidden: true ,
+          attr: "align=center"
+        },
+        <% wtuicolumns.zip(wtuicolumnsizes).each do |column, size| %>
+          {
+            field: "#{column}",
+            caption: "<%= eval(model).human_attribute_name(column.to_sym) %>",
+            size: "#{size}",
+            sortable: true,
+          },
+        <% end %>
+      ],
+
+      searches: [
+        <repeat with="&wtuisearches">
+          {
+            field: "#{this}",
+            caption: "#{this}",
+            type: 'text'
+          },
+        </repeat>
+      ],
+
+      sortData: [{
+        field: 'this',
+        direction: 'ASC'
+      }]
+    })
+    w2ui["w2oui-index-table"].load("<%= prefix + eval(model).model_name.plural + ".json"%>")
+  </script>
+</def>
