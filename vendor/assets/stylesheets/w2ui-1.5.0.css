@@ -888,7 +888,7 @@ button.w2ui-btn-red.clicked {
   border-top-color: #81C6FF;
 }
 /*
-*    ARROWS 
+*    ARROWS
 */
 .arrow-up {
   background: none;
@@ -971,7 +971,7 @@ button.w2ui-btn-red.clicked {
   outline: 1px solid #666;
   border: 1px solid #fff;
 }
-/* 
+/*
 *    DATE overlay
 */
 .w2ui-calendar {
@@ -1198,7 +1198,7 @@ button.w2ui-btn-red.clicked {
 .w2ui-select[readonly],
 .w2ui-select[disabled] {
   background-image: none;
-  background-color: #f1f1f1 !importan;
+  background-color: #f1f1f1 !important;
   color: #777 !important;
 }
 /*
