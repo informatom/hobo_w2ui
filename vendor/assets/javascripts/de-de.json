@@ -71,6 +71,7 @@
         "not in": "enthält nicht",
         "begins": "beginnt mit",
         "ends": "endet mit",
-        "Cancel": "Abbrechen"
+        "Cancel": "Abbrechen",
+        "Your remove data source record count has changed, reloading from the first record." : "Die Anzahl der Datensätze am Server hat sich geändert, daher wird neu geladen."
     }
 }
